@@ -1,9 +1,12 @@
 package com.example.colormyviews
 
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -17,7 +20,11 @@ class MainActivity : AppCompatActivity() {
                 button_red, button_green, button_yellow)
 
         for (item in clickableViews) {
-            item.setOnClickListener { makeColored(it) }
+            item.setOnClickListener {
+                makeColored(it)
+                val color2 = it.background
+                Log.e("color", " ===  ${color2 == ContextCompat.getDrawable(item.context!!, R.color.my_red)}")
+            }
         }
     }
 
