@@ -1,5 +1,6 @@
 package com.example.colormyviews
 
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.TextView
@@ -16,11 +17,11 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.RippleDrawable
+import android.util.Log
 import androidx.annotation.ColorInt
-import androidx.annotation.NonNull
 import androidx.test.internal.util.Checks
 import org.hamcrest.Matcher
-import org.w3c.dom.Text
 
 
 @RunWith(AndroidJUnit4::class)
@@ -29,33 +30,36 @@ class ColorsTest {
     @get:Rule val activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
     @Test
-    fun testButtonRedSetsBoxThreeToRed() {
+    fun testButtonRed_setsBoxThreeBackground_toRed() {
         onView(withId(R.id.button_red)).perform(click())
         onView(withId(R.id.box_three_text)).check(matches(withBackgroundColor(R.color.my_red)))
+    }
 
-//        object: BoundedMatcher<View, TextView>(TextView::class.java) {
-//            override fun describeTo(description: Description?) {}
-//
-//            override fun matchesSafely(item: TextView?): Boolean {
-//                val color: Drawable = item?.background!!
-//                val colorToMatch: Drawable = ContextCompat.getDrawable(item.context!!, R.color.my_red)!!
-//                return color == colorToMatch
-//            }
-//        }))
+    @Test
+    fun testButtonYellow_setsBoxFourBackground_toYellow() {
+        onView(withId(R.id.button_yellow)).perform(click())
+        onView(withId(R.id.box_four_text)).check(matches(withBackgroundColor(R.color.my_yellow)))
+    }
+
+    @Test
+    fun testButtonGreen_setsBoxFiveBackground_toGreen() {
+        onView(withId(R.id.button_green)).perform(click())
+        onView(withId(R.id.box_five_text)).check(matches(withBackgroundColor(R.color.my_green)))
     }
 
     private fun withBackgroundColor(@ColorInt color: Int): Matcher<View> {
         Checks.checkNotNull(color)
         return object : BoundedMatcher<View, TextView>(TextView::class.java) {
-            public override fun matchesSafely(warning: TextView): Boolean {
-                val color2 = (warning.background as ColorDrawable).color
-                println("Color 1 $color == $color2")
-                return color == color2
+            override fun describeTo(description: Description?) {
+                description?.appendText("TextView background color to be $color")
             }
 
-            override fun describeTo(description: Description) {
-                description.appendText("with text color: ")
+            override fun matchesSafely(item: TextView?): Boolean {
+                val backgroundColor = item?.background as ColorDrawable
+                val colorDrawable = ColorDrawable(ContextCompat.getColor(item.context, color))
+                return colorDrawable.color == backgroundColor.color
             }
+
         }
     }
 }
